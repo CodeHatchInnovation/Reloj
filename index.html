@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smartwatch Pro Interface</title>
+    <title>Smartwatch Minimal</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
@@ -11,129 +11,100 @@
 
     <main class="watch-container">
         
+        <div class="strap top-strap"></div>
+        <div class="strap bottom-strap"></div>
+
         <div class="watch-case">
             
             <div id="screen" class="screen">
-                
                 <div id="sleep-overlay" class="sleep-overlay hidden"></div>
 
-                <div class="status-bar">
-                    <span class="material-icons-round small-icon">bluetooth</span>
-                    <span class="material-icons-round small-icon">do_not_disturb_off</span>
-                    <span id="top-battery-icon" class="material-icons-round small-icon">battery_full</span>
-                </div>
-
                 <section id="home-screen" class="page active">
-                    <div class="complication weather-comp">
-                        <span class="material-icons-round">cloud_queue</span>
-                        <div class="weather-text">
-                            <span class="temp">22°C</span>
-                            <span class="loc">N. Romero</span>
-                        </div>
+                    
+                    <div class="top-weather">
+                        <span class="material-icons-round">cloud</span>
+                        <span>22° N. Romero</span>
                     </div>
 
-                    <div class="center-time">
-                        <div class="digital-clock">
-                            <span id="hours">10</span><span class="colon">:</span><span id="minutes">45</span>
-                        </div>
-                        <div class="date-display">SÁB 22 FEB</div>
+                    <div class="main-clock">
+                        <span id="hours">--</span><span class="colon">:</span><span id="minutes">--</span>
                     </div>
 
-                    <div class="rings-container">
-                        <div class="ring-wrapper">
-                            <div class="ring steps-ring-css" id="home-steps-ring"></div>
-                            <span class="material-icons-round ring-icon">directions_walk</span>
-                        </div>
-                        <div class="ring-wrapper">
-                            <div class="ring battery-ring-css" id="home-batt-ring"></div>
-                            <span class="material-icons-round ring-icon">bolt</span>
-                        </div>
-                    </div>
-
-                    <div class="complication heart-comp">
-                        <span class="material-icons-round heart-anim">favorite</span>
-                        <span id="home-bpm">--</span>
-                    </div>
+                    <div class="date-label">...</div>
+                    
+                    <div class="menu-hint"></div>
                 </section>
 
                 <section id="menu-screen" class="page">
                     <div class="app-grid">
                         <div class="app-item" data-target="app-heart">
                             <div class="app-icon color-red"><span class="material-icons-round">favorite</span></div>
-                            <span class="app-label">Salud</span>
+                            <span>Salud</span>
                         </div>
                         <div class="app-item" data-target="app-weather">
                             <div class="app-icon color-yellow"><span class="material-icons-round">wb_sunny</span></div>
-                            <span class="app-label">Clima</span>
+                            <span>Clima</span>
                         </div>
-                        <div class="app-item" data-target="app-settings">
-                            <div class="app-icon color-grey"><span class="material-icons-round">settings</span></div>
-                            <span class="app-label">Ajustes</span>
+                        <div class="app-item" data-target="app-steps">
+                            <div class="app-icon color-blue"><span class="material-icons-round">directions_walk</span></div>
+                            <span>Pasos</span>
                         </div>
                         <div class="app-item" data-target="app-music">
                             <div class="app-icon color-green"><span class="material-icons-round">music_note</span></div>
-                            <span class="app-label">Música</span>
+                            <span>Música</span>
                         </div>
-                    </div>
-                </section>
-
-                <section id="app-weather" class="page app-detail">
-                    <div class="weather-main">
-                        <span class="material-icons-round sun-anim">wb_cloudy</span>
-                        <span class="big-temp">22°</span>
-                        <p class="desc">Parcialmente Nublado</p>
-                    </div>
-                    <div class="weather-details">
-                        <p>📍 Nicolás Romero, Méx.</p>
-                        <p>📅 Sábado 22 Feb</p>
-                        <div class="grid-details">
-                            <span>💧 45%</span>
-                            <span>💨 12km/h</span>
+                        <div class="app-item" data-target="app-battery">
+                            <div class="app-icon color-teal"><span class="material-icons-round">battery_std</span></div>
+                            <span>Batería</span>
                         </div>
-                    </div>
-                </section>
-
-                <section id="app-settings" class="page app-detail scrollable">
-                    <h3>Ajustes</h3>
-                    
-                    <div class="setting-group">
-                        <label>Brillo de Pantalla</label>
-                        <div class="brightness-control">
-                            <span class="material-icons-round">brightness_low</span>
-                            <input type="range" id="brightness-slider" min="20" max="100" value="100">
-                            <span class="material-icons-round">brightness_high</span>
+                        <div class="app-item" data-target="app-settings">
+                            <div class="app-icon color-grey"><span class="material-icons-round">settings</span></div>
+                            <span>Ajustes</span>
                         </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <span>Modo Avión</span>
-                        <div class="toggle"></div>
-                    </div>
-                    <div class="setting-item">
-                        <span>No Molestar</span>
-                        <div class="toggle active"></div>
                     </div>
                 </section>
 
                 <section id="app-heart" class="page app-detail">
-                    <div class="heart-scan">
-                        <span class="material-icons-round big-heart">favorite</span>
-                        <div class="scan-line"></div>
-                    </div>
-                    <h2 id="bpm-detail">86 <span style="font-size:1rem">BPM</span></h2>
-                    <p>Medición activa</p>
+                    <span class="material-icons-round big-icon color-text-red">favorite</span>
+                    <h2 id="bpm-display">86 BPM</h2>
+                    <p>Ritmo Normal</p>
                 </section>
-                
-                <section id="app-music" class="page app-detail">
-                    <div class="music-art"></div>
+
+                <section id="app-steps" class="page app-detail">
+                    <div class="ring-container">
+                         <div class="ring steps-ring-css"></div>
+                         <span class="material-icons-round ring-center-icon">directions_walk</span>
+                    </div>
+                    <h2>3,450</h2>
+                    <p>Pasos hoy</p>
+                </section>
+
+                <section id="app-battery" class="page app-detail">
+                     <div class="ring-container">
+                         <div class="ring battery-ring-css"></div>
+                         <span class="material-icons-round ring-center-icon">bolt</span>
+                    </div>
+                    <h2>85%</h2>
+                    <p>En uso</p>
+                </section>
+
+                <section id="app-weather" class="page app-detail">
+                    <span class="material-icons-round big-icon color-text-yellow">cloud</span>
+                    <h2>22°C</h2>
+                    <p>Nicolás Romero</p>
+                    <small>Parcialmente Nublado</small>
+                </section>
+
+                 <section id="app-music" class="page app-detail">
+                    <span class="material-icons-round big-icon color-text-green">music_note</span>
                     <h3>Blinding Lights</h3>
                     <p>The Weeknd</p>
-                    <div class="progress-bar-bg"><div class="progress-bar-fill"></div></div>
-                    <div class="music-controls">
-                        <span class="material-icons-round">skip_previous</span>
-                        <span class="material-icons-round play-btn">play_circle</span>
-                        <span class="material-icons-round">skip_next</span>
-                    </div>
+                    <div class="progress-bar"><div class="fill"></div></div>
+                </section>
+
+                <section id="app-settings" class="page app-detail">
+                    <p>Brillo</p>
+                    <input type="range" id="brightness-slider" min="20" max="100" value="100">
                 </section>
 
                 <div id="back-btn" class="back-btn hidden">
@@ -144,11 +115,9 @@
             
             <div id="side-button" class="side-button"></div>
         </div>
-        
-        <div class="strap top-strap"></div>
-        <div class="strap bottom-strap"></div>
 
     </main>
+
     <script src="script.js"></script>
 </body>
 </html>
