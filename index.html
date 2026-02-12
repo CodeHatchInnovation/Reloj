@@ -1,307 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smartwatch Ultimate UI</title>
-<script src="https://cdn.tailwindcss.com"></script>
-
-<style>
-body{
-  background: radial-gradient(circle at center,#0f172a,#000);
-  font-family: system-ui, -apple-system, sans-serif;
-}
-
-/* WATCH BODY */
-.watch{
-  width:420px;
-  height:420px;
-  border-radius:50%;
-  background:#000;
-  position:relative;
-  overflow:hidden;
-  box-shadow:
-    inset 0 0 40px rgba(255,255,255,0.04),
-    0 0 100px rgba(0,0,0,0.9);
-  transition:0.4s ease;
-}
-
-/* STATUS */
-.status{
-  position:absolute;
-  top:12px;
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  padding:0 50px;
-  font-size:12px;
-}
-
-/* SCREENS */
-.screen{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  transition:0.4s ease;
-}
-
-.hidden{
-  opacity:0;
-  transform:scale(0.85);
-  pointer-events:none;
-}
-
-.active{
-  opacity:1;
-  transform:scale(1);
-}
-
-/* CLOCK HANDS */
-.hand{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform-origin:bottom;
-}
-
-.hour{width:4px;height:70px;background:white;}
-.minute{width:3px;height:100px;background:white;}
-.second{width:2px;height:110px;background:#22c55e;}
-
-/* APP ICON */
-.app{
-  width:70px;
-  height:70px;
-  border-radius:20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(255,255,255,0.07);
-  backdrop-filter:blur(10px);
-  font-size:24px;
-  transition:0.3s;
-}
-
-.app:hover{transform:scale(1.15);}
-
-/* RINGS */
-svg{position:absolute;}
-
-/* SIDE BUTTON */
-.side-btn{
-  position:absolute;
-  right:-18px;
-  top:160px;
-  width:16px;
-  height:90px;
-  background:#333;
-  border-radius:12px;
-  cursor:pointer;
-}
-
-/* DIGITAL CROWN */
-.crown{
-  position:absolute;
-  right:-25px;
-  top:270px;
-  width:22px;
-  height:22px;
-  background:#555;
-  border-radius:50%;
-}
-
-/* ALWAYS ON */
-.always{
-  filter:brightness(0.25);
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Smartwatch Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
 </head>
+<body>
 
-<body class="flex items-center justify-center h-screen text-white">
+<div class="watch">
 
-<div class="watch" id="watch">
+  <!-- HOME -->
+  <div id="home" class="screen active">
+    
+    <div class="status-bar">
+      <span id="battery">🔋 85%</span>
+      <span>📶 BT</span>
+      <span id="modeIcon">🌙</span>
+    </div>
 
-<div class="side-btn" onclick="openApps()"></div>
-<div class="crown" onwheel="scrollApps(event)"></div>
+    <div class="time-container">
+      <div id="time" class="time"></div>
+      <div id="date" class="date"></div>
+    </div>
 
-<!-- STATUS BAR -->
-<div class="status">
-  <span id="batteryIcon">🔋100%</span>
-  <span>📶 BT GPS</span>
-  <span id="silentIcon">🔔</span>
+    <div class="rings">
+      <svg width="160" height="160">
+        <circle class="bg-ring" cx="80" cy="80" r="60"/>
+        <circle id="activityRing" class="progress-ring" cx="80" cy="80" r="60"/>
+      </svg>
+    </div>
+
+    <div class="quick-info">
+      <div>👟 <span id="stepsCount">3240</span></div>
+      <div>❤️ <span id="heartRate">72</span> BPM</div>
+      <div>☀️ 26°C</div>
+    </div>
+
+    <button class="menu-btn" onclick="openMenu()">Apps</button>
+  </div>
+
+  <!-- MENU -->
+  <div id="menu" class="screen">
+    <button class="back-btn" onclick="goHome()">⬅</button>
+
+    <div class="grid">
+      <div class="app-icon" onclick="openApp('heart')">❤️</div>
+      <div class="app-icon" onclick="openApp('steps')">👟</div>
+      <div class="app-icon" onclick="openApp('weather')">☁️</div>
+      <div class="app-icon" onclick="openApp('music')">🎵</div>
+      <div class="app-icon" onclick="openApp('settings')">⚙️</div>
+      <div class="app-icon" onclick="simulateNotification()">🔔</div>
+    </div>
+  </div>
+
+  <!-- HEART APP -->
+  <div id="heart" class="screen center">
+    <button class="back-btn" onclick="goMenu()">⬅</button>
+    <div class="big-icon pulse">❤️</div>
+    <div class="big-number" id="heartAppRate">75 BPM</div>
+  </div>
+
+  <!-- STEPS APP -->
+  <div id="steps" class="screen center">
+    <button class="back-btn" onclick="goMenu()">⬅</button>
+    <div class="big-icon">👟</div>
+    <div class="big-number" id="stepsAppCount">3240</div>
+    <div>Pasos hoy</div>
+  </div>
+
+  <!-- WEATHER APP -->
+  <div id="weather" class="screen center">
+    <button class="back-btn" onclick="goMenu()">⬅</button>
+    <div class="big-icon">☀️</div>
+    <div class="big-number">26°C</div>
+    <div>Soleado</div>
+  </div>
+
+  <!-- MUSIC -->
+  <div id="music" class="screen center">
+    <button class="back-btn" onclick="goMenu()">⬅</button>
+    <div class="big-icon">🎵</div>
+    <div>Now Playing</div>
+    <div class="song">Blinding Lights</div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="settings" class="screen center">
+    <button class="back-btn" onclick="goMenu()">⬅</button>
+    <button class="toggle-btn" onclick="toggleMode()">Cambiar Día/Noche</button>
+  </div>
+
 </div>
 
-<!-- HOME FACE -->
-<div id="home" class="screen active">
-
-<!-- ACTIVITY RINGS -->
-<svg width="260" height="260" class="-rotate-90">
-  <circle cx="130" cy="130" r="110" stroke="#111" stroke-width="8" fill="none"/>
-  <circle id="moveRing" cx="130" cy="130" r="110"
-    stroke="#22c55e" stroke-width="8"
-    fill="none" stroke-dasharray="691"
-    stroke-dashoffset="691"
-    stroke-linecap="round"/>
-
-  <circle cx="130" cy="130" r="90" stroke="#111" stroke-width="8" fill="none"/>
-  <circle id="exerciseRing" cx="130" cy="130" r="90"
-    stroke="#3b82f6" stroke-width="8"
-    fill="none" stroke-dasharray="565"
-    stroke-dashoffset="565"
-    stroke-linecap="round"/>
-
-  <circle cx="130" cy="130" r="70" stroke="#111" stroke-width="8" fill="none"/>
-  <circle id="standRing" cx="130" cy="130" r="70"
-    stroke="#f97316" stroke-width="8"
-    fill="none" stroke-dasharray="439"
-    stroke-dashoffset="439"
-    stroke-linecap="round"/>
-</svg>
-
-<!-- ANALOG -->
-<div class="hand hour" id="hour"></div>
-<div class="hand minute" id="minute"></div>
-<div class="hand second" id="second"></div>
-
-<!-- DIGITAL -->
-<div class="text-6xl font-bold tracking-widest mt-24" id="digitalTime"></div>
-<div class="text-sm text-gray-400" id="date"></div>
-
-<div class="mt-3 text-sm text-blue-400">👟 <span id="steps">0</span></div>
-<div class="text-sm text-red-400">❤️ <span id="bpm">80</span> BPM</div>
-<div class="text-sm text-yellow-400">☀ 25°C</div>
-
-</div>
-
-<!-- APPS -->
-<div id="apps" class="screen hidden overflow-y-auto">
-
-<div class="grid grid-cols-3 gap-6 mt-10">
-  <div class="app">❤️</div>
-  <div class="app">🎵</div>
-  <div class="app">📩</div>
-  <div class="app">📞</div>
-  <div class="app">🏃</div>
-  <div class="app">🧭</div>
-  <div class="app">⚙</div>
-  <div class="app" onclick="toggleSilent()">🔕</div>
-  <div class="app" onclick="toggleTheme()">🌗</div>
-  <div class="app" onclick="toggleAlways()">💤</div>
-</div>
-
-<button onclick="openHome()" class="mt-6 mb-10 text-xs bg-white/10 px-4 py-1 rounded-full">
-Volver
-</button>
-
-</div>
-
-</div>
-
-<script>
-
-/* CLOCK */
-function updateClock(){
-  const now=new Date();
-  const h=now.getHours()%12;
-  const m=now.getMinutes();
-  const s=now.getSeconds();
-
-  hour.style.transform=`translate(-50%,-100%) rotate(${h*30+m/2}deg)`;
-  minute.style.transform=`translate(-50%,-100%) rotate(${m*6}deg)`;
-  second.style.transform=`translate(-50%,-100%) rotate(${s*6}deg)`;
-
-  digitalTime.textContent=
-    now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
-  date.textContent=
-    now.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
-}
-setInterval(updateClock,1000);
-updateClock();
-
-/* HEART */
-setInterval(()=>{
-  bpm.textContent=70+Math.floor(Math.random()*25);
-},3000);
-
-/* STEPS + RINGS */
-let steps=0,last=0;
-function motion(e){
-  let a=e.accelerationIncludingGravity;
-  if(!a)return;
-  let mag=Math.sqrt(a.x*a.x+a.y*a.y+a.z*a.z);
-  if(mag>15 && Date.now()-last>500){
-    steps++;
-    document.getElementById("steps").textContent=steps;
-    updateRings();
-    last=Date.now();
-  }
-}
-if(typeof DeviceMotionEvent!=="undefined"){
-  window.addEventListener("devicemotion",motion);
-}
-
-function updateRings(){
-  let move=Math.min(steps/10000,1);
-  let exercise=Math.min(steps/5000,1);
-  let stand=Math.min(steps/3000,1);
-
-  moveRing.style.strokeDashoffset=691-(691*move);
-  exerciseRing.style.strokeDashoffset=565-(565*exercise);
-  standRing.style.strokeDashoffset=439-(439*stand);
-}
-
-/* BATTERY */
-let battery=100;
-setInterval(()=>{
-  if(battery>0)battery--;
-  batteryIcon.textContent="🔋"+battery+"%";
-},60000);
-
-/* NAVIGATION */
-function openApps(){
-  home.classList.add("hidden");
-  home.classList.remove("active");
-  apps.classList.remove("hidden");
-  apps.classList.add("active");
-  if(navigator.vibrate)navigator.vibrate(40);
-}
-
-function openHome(){
-  apps.classList.add("hidden");
-  apps.classList.remove("active");
-  home.classList.remove("hidden");
-  home.classList.add("active");
-}
-
-/* CROWN SCROLL */
-function scrollApps(e){
-  if(!apps.classList.contains("active")) return;
-  apps.scrollTop+=e.deltaY;
-}
-
-/* SILENT */
-function toggleSilent(){
-  silentIcon.textContent=
-    silentIcon.textContent==="🔔"?"🔕":"🔔";
-}
-
-/* THEME */
-function toggleTheme(){
-  watch.classList.toggle("bg-white");
-  watch.classList.toggle("bg-black");
-  watch.classList.toggle("text-black");
-  watch.classList.toggle("text-white");
-}
-
-/* ALWAYS ON */
-function toggleAlways(){
-  watch.classList.toggle("always");
-}
-
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
