@@ -1,84 +1,69 @@
-// Configuración Global
+// --- Configuración ---
 const SCREENS = document.querySelectorAll('.page');
 const SCREEN_EL = document.getElementById('screen');
-const BACK_BTN = document.getElementById('back-btn');
 const SLEEP_OVERLAY = document.getElementById('sleep-overlay');
-let currentScreenId = 'home-screen';
 let sleepTimer;
 
-// --- Inicialización ---
+// Inicialización
 document.addEventListener('DOMContentLoaded', () => {
-    updateClock();
-    setInterval(updateClock, 1000);
+    updateClock(); // Ejecutar inmediatamente
+    setInterval(updateClock, 1000); // Actualizar cada segundo
     resetSleepTimer();
-    
-    // Iniciar simulación de ritmo cardíaco
     startHeartRateSim();
 });
 
-// --- 1. Reloj y Fecha (Lógica del Punto 1) ---
+// --- Lógica de Reloj y Fecha (Aquí está el cambio) ---
 function updateClock() {
     const now = new Date();
-    // Hora real
-    document.getElementById('hours').textContent = now.getHours().toString().padStart(2, '0');
-    document.getElementById('minutes').textContent = now.getMinutes().toString().padStart(2, '0');
     
-    // NOTA: La fecha está "hardcoded" visualmente en el HTML como "SÁB 22 FEB" 
-    // para cumplir con tu requerimiento específico de Nicolás Romero, 22 de Febrero.
-    // Si quisieras fecha real automática, descomenta esto:
-    /*
-    const days = ['DOM','LUN','MAR','MIE','JUE','VIE','SAB'];
-    const months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
-    const dateStr = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}`;
-    document.querySelector('.date-display').textContent = dateStr;
-    */
+    // 1. Hora
+    const h = now.getHours().toString().padStart(2, '0');
+    const m = now.getMinutes().toString().padStart(2, '0');
+    document.getElementById('hours').textContent = h;
+    document.getElementById('minutes').textContent = m;
+    
+    // 2. Fecha Automática (Formato: JUE 12/02)
+    const dias = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
+    
+    const nombreDia = dias[now.getDay()]; // Obtiene el día (0-6)
+    const numeroDia = now.getDate().toString().padStart(2, '0'); // Día del mes
+    const numeroMes = (now.getMonth() + 1).toString().padStart(2, '0'); // Mes (0-11) + 1
+    
+    // Construimos la cadena final
+    const fechaString = `${nombreDia} ${numeroDia}/${numeroMes}`;
+    
+    // Insertamos en el HTML
+    document.querySelector('.date-display').textContent = fechaString;
 }
 
-// --- 2. Sistema de Navegación ---
+// --- Navegación ---
 function navigateTo(screenId) {
+    // Ocultar todas
     SCREENS.forEach(s => s.classList.remove('active'));
-    document.getElementById(screenId).classList.add('active');
-    currentScreenId = screenId;
-
-    // Manejo botón atrás
+    // Mostrar objetivo
+    const target = document.getElementById(screenId);
+    if(target) target.classList.add('active');
+    
+    // Gestionar botón atrás
+    const backBtn = document.getElementById('back-btn');
     if (screenId === 'home-screen') {
-        BACK_BTN.classList.add('hidden');
-    } else if (screenId === 'menu-screen') {
-        BACK_BTN.classList.remove('hidden');
-        BACK_BTN.onclick = () => navigateTo('home-screen');
+        backBtn.classList.add('hidden');
     } else {
-        // Estamos en una app interna
-        BACK_BTN.classList.remove('hidden');
-        BACK_BTN.onclick = () => navigateTo('menu-screen');
+        backBtn.classList.remove('hidden');
+        backBtn.onclick = () => navigateTo(screenId === 'menu-screen' ? 'home-screen' : 'menu-screen');
     }
 }
 
-// --- 3. Control de Brillo (Requerimiento Específico) ---
-const brightnessSlider = document.getElementById('brightness-slider');
-brightnessSlider.addEventListener('input', (e) => {
-    const value = e.target.value; // 20 a 100
-    const decimal = value / 100;
-    
-    // Aplicamos la variable CSS al contenedor principal
-    SCREEN_EL.style.setProperty('--screen-brightness', decimal);
-});
+// Interacciones
+document.getElementById('home-screen').addEventListener('click', () => navigateTo('menu-screen'));
 
-// --- 4. Interacción Táctil y Eventos ---
-
-// Click en Apps del Menú
 document.querySelectorAll('.app-item').forEach(item => {
-    item.addEventListener('click', () => {
-        const target = item.dataset.target;
-        navigateTo(target);
+    item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navigateTo(item.dataset.target);
     });
 });
 
-// Click en la esfera para ir al menú
-document.getElementById('home-screen').addEventListener('click', () => {
-    navigateTo('menu-screen');
-});
-
-// Botón Físico Lateral (Home / Wake / Back)
 document.getElementById('side-button').addEventListener('click', () => {
     if (SLEEP_OVERLAY.classList.contains('active')) {
         wakeScreen();
@@ -87,35 +72,32 @@ document.getElementById('side-button').addEventListener('click', () => {
     }
 });
 
-// --- 5. Simulaciones ---
+// Ajustes de Brillo
+const slider = document.getElementById('brightness-slider');
+if(slider){
+    slider.addEventListener('input', (e) => {
+        SCREEN_EL.style.setProperty('--screen-brightness', e.target.value / 100);
+    });
+}
 
-// Ritmo Cardíaco
+// Simulaciones
 function startHeartRateSim() {
     const bpmHome = document.getElementById('home-bpm');
-    const bpmDetail = document.getElementById('bpm-detail');
-    
+    if(!bpmHome) return;
     setInterval(() => {
-        const val = Math.floor(Math.random() * (95 - 70) + 70);
-        bpmHome.textContent = val;
-        bpmDetail.innerHTML = `${val} <span style="font-size:1rem">BPM</span>`;
+        bpmHome.textContent = Math.floor(Math.random() * (90 - 70) + 70);
     }, 2000);
 }
 
-// --- 6. Sistema de Energía (Sleep Mode) ---
+// Sleep Mode
 function resetSleepTimer() {
     clearTimeout(sleepTimer);
     if (!SLEEP_OVERLAY.classList.contains('active')) {
-        sleepTimer = setTimeout(() => {
-            SLEEP_OVERLAY.classList.add('active');
-        }, 15000); // 15 seg apagado
+        sleepTimer = setTimeout(() => SLEEP_OVERLAY.classList.add('active'), 15000);
     }
 }
-
 function wakeScreen() {
     SLEEP_OVERLAY.classList.remove('active');
     resetSleepTimer();
 }
-
-// Cualquier toque reinicia el temporizador
 SCREEN_EL.addEventListener('click', resetSleepTimer);
-SCREEN_EL.addEventListener('touchstart', resetSleepTimer);
