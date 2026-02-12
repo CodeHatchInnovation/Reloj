@@ -1,95 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Smartwatch Pro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smartwatch Ultra Clean</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="watch">
+<div class="watch" id="watch">
 
-  <!-- HOME -->
-  <div id="home" class="screen active">
-    
-    <div class="status-bar">
-      <span id="battery">🔋 85%</span>
-      <span>📶 BT</span>
-      <span id="modeIcon">🌙</span>
-    </div>
-
-    <div class="time-container">
-      <div id="time" class="time"></div>
-      <div id="date" class="date"></div>
-    </div>
-
-    <div class="rings">
-      <svg width="160" height="160">
-        <circle class="bg-ring" cx="80" cy="80" r="60"/>
-        <circle id="activityRing" class="progress-ring" cx="80" cy="80" r="60"/>
-      </svg>
-    </div>
-
-    <div class="quick-info">
-      <div>👟 <span id="stepsCount">3240</span></div>
-      <div>❤️ <span id="heartRate">72</span> BPM</div>
-      <div>☀️ 26°C</div>
-    </div>
-
-    <button class="menu-btn" onclick="openMenu()">Apps</button>
+  <!-- HOME (solo reloj) -->
+  <div id="home" class="screen active center">
+      <div class="time" id="time"></div>
+      <div class="date" id="date"></div>
+      <div class="hint">Desliza ↑ para apps</div>
   </div>
 
-  <!-- MENU -->
+  <!-- MENU DE APPS -->
   <div id="menu" class="screen">
-    <button class="back-btn" onclick="goHome()">⬅</button>
+      <div class="menu-header">
+          <span>Apps</span>
+      </div>
 
-    <div class="grid">
-      <div class="app-icon" onclick="openApp('heart')">❤️</div>
-      <div class="app-icon" onclick="openApp('steps')">👟</div>
-      <div class="app-icon" onclick="openApp('weather')">☁️</div>
-      <div class="app-icon" onclick="openApp('music')">🎵</div>
-      <div class="app-icon" onclick="openApp('settings')">⚙️</div>
-      <div class="app-icon" onclick="simulateNotification()">🔔</div>
-    </div>
+      <div class="grid">
+          <div class="app-icon" onclick="openApp('heart')">❤️</div>
+          <div class="app-icon" onclick="openApp('steps')">👟</div>
+          <div class="app-icon" onclick="openApp('weather')">☁️</div>
+          <div class="app-icon" onclick="openApp('music')">🎵</div>
+          <div class="app-icon" onclick="openApp('stopwatch')">⏱</div>
+          <div class="app-icon" onclick="openApp('timer')">⏲</div>
+          <div class="app-icon" onclick="openApp('gps')">🧭</div>
+          <div class="app-icon" onclick="simulateCall()">📞</div>
+          <div class="app-icon" onclick="toggleMode()">⚙️</div>
+      </div>
   </div>
 
-  <!-- HEART APP -->
-  <div id="heart" class="screen center">
-    <button class="back-btn" onclick="goMenu()">⬅</button>
-    <div class="big-icon pulse">❤️</div>
-    <div class="big-number" id="heartAppRate">75 BPM</div>
-  </div>
-
-  <!-- STEPS APP -->
-  <div id="steps" class="screen center">
-    <button class="back-btn" onclick="goMenu()">⬅</button>
-    <div class="big-icon">👟</div>
-    <div class="big-number" id="stepsAppCount">3240</div>
-    <div>Pasos hoy</div>
-  </div>
-
-  <!-- WEATHER APP -->
-  <div id="weather" class="screen center">
-    <button class="back-btn" onclick="goMenu()">⬅</button>
-    <div class="big-icon">☀️</div>
-    <div class="big-number">26°C</div>
-    <div>Soleado</div>
-  </div>
-
-  <!-- MUSIC -->
-  <div id="music" class="screen center">
-    <button class="back-btn" onclick="goMenu()">⬅</button>
-    <div class="big-icon">🎵</div>
-    <div>Now Playing</div>
-    <div class="song">Blinding Lights</div>
-  </div>
-
-  <!-- SETTINGS -->
-  <div id="settings" class="screen center">
-    <button class="back-btn" onclick="goMenu()">⬅</button>
-    <button class="toggle-btn" onclick="toggleMode()">Cambiar Día/Noche</button>
-  </div>
+  <!-- CONTENEDOR DE APP ACTIVA -->
+  <div id="appContainer" class="screen center"></div>
 
 </div>
 
