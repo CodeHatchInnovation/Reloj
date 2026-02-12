@@ -1,126 +1,130 @@
-const screens=document.querySelectorAll(".screen");
-const watch=document.getElementById("watch");
-let currentScreen="home";
+// --- Estado del Sistema ---
+let currentScreen = 'home-screen';
 let sleepTimer;
-let activeIntervals=[];
+let bpmInterval;
+const SLEEP_DELAY = 15000; // 15 segundos para apagar
 
-// TIME
-function updateTime(){
-  const now=new Date();
-  document.getElementById("time").innerText=
-    now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  document.getElementById("date").innerText=
-    now.toLocaleDateString();
-}
-setInterval(updateTime,1000);
-updateTime();
+// --- Elementos del DOM ---
+const screen = document.getElementById('screen');
+const pages = document.querySelectorAll('.page');
+const sleepOverlay = document.getElementById('sleep-overlay');
+const hoursEl = document.getElementById('hours');
+const minutesEl = document.getElementById('minutes');
+const backBtn = document.getElementById('back-btn');
+const sideBtn = document.getElementById('side-button');
 
-// CLEAR INTERVALS
-function clearAppIntervals(){
-  activeIntervals.forEach(i=>clearInterval(i));
-  activeIntervals=[];
-}
-
-// SCREEN SWITCH
-function showScreen(id){
-  clearAppIntervals();
-  screens.forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  currentScreen=id;
-  wakeScreen();
-}
-
-// WAKE / SLEEP
-function wakeScreen(){
-  watch.style.opacity="1";
-  clearTimeout(sleepTimer);
-  sleepTimer=setTimeout(()=>{
-    watch.style.opacity=".5";
-  },15000);
-}
-watch.addEventListener("click",wakeScreen);
-
-// SWIPE
-let startY=0;
-watch.addEventListener("touchstart",e=>{
-  startY=e.touches[0].clientY;
-});
-watch.addEventListener("touchend",e=>{
-  let diff=startY-e.changedTouches[0].clientY;
-  if(diff>60 && currentScreen==="home") showScreen("menu");
-  if(diff<-60 && currentScreen==="menu") showScreen("home");
+// --- Inicialización ---
+document.addEventListener('DOMContentLoaded', () => {
+    updateTime();
+    setInterval(updateTime, 1000);
+    resetSleepTimer();
+    simulateSteps();
 });
 
-// OPEN APP
-function openApp(name){
-  clearAppIntervals();
-  const container=document.getElementById("appContainer");
-  container.innerHTML="<button class='back-btn' onclick='showScreen(\"menu\")'>⬅</button>";
-  showScreen("appContainer");
-
-  if(name==="heart"){
-    container.innerHTML+=`
-      <div style="position:relative;">
-        <div class="wave"></div>
-        <div class="heart">❤️</div>
-      </div>
-      <div id="bpm" style="margin-top:20px;font-size:22px;"></div>
-    `;
-    let interval=setInterval(()=>{
-      document.getElementById("bpm").innerText=
-        Math.floor(Math.random()*30+60)+" BPM";
-    },1500);
-    activeIntervals.push(interval);
-  }
-
-  if(name==="music"){
-    container.innerHTML+=`
-      <div>🎵 Blinding Lights</div>
-      <div class="progress-bar">
-        <div class="progress" id="musicBar"></div>
-      </div>
-    `;
-    let progress=0;
-    let interval=setInterval(()=>{
-      progress+=2;
-      if(progress>100) progress=0;
-      document.getElementById("musicBar").style.width=progress+"%";
-    },200);
-    activeIntervals.push(interval);
-  }
-
-  if(name==="weather"){
-    container.innerHTML+=`
-      <div class="sun">☀️</div>
-      <div style="margin-top:20px;">26°C - Soleado</div>
-    `;
-  }
-
-  if(name==="steps"){
-    container.innerHTML+=`
-      <div style="font-size:60px;">👟</div>
-      <div style="margin-top:20px;font-size:22px;">
-        ${Math.floor(Math.random()*4000+4000)} pasos
-      </div>
-    `;
-  }
-
-  if(name==="battery"){
-    container.innerHTML+=`
-      <div style="font-size:60px;">🔋</div>
-      <div style="margin-top:20px;font-size:22px;">
-        ${Math.floor(Math.random()*40+60)}%
-      </div>
-    `;
-  }
-
-  if(name==="settings"){
-    container.innerHTML+=`
-      <div style="font-size:50px;">⚙️</div>
-      <div style="margin-top:20px;">
-        Modo oscuro activado
-      </div>
-    `;
-  }
+// --- Manejo del Tiempo ---
+function updateTime() {
+    const now = new Date();
+    const h = now.getHours().toString().padStart(2, '0');
+    const m = now.getMinutes().toString().padStart(2, '0');
+    hoursEl.textContent = h;
+    minutesEl.textContent = m;
 }
 
+// --- Navegación ---
+function showScreen(screenId) {
+    // Ocultar todas
+    pages.forEach(page => page.classList.remove('active'));
+    
+    // Mostrar objetivo
+    const target = document.getElementById(screenId);
+    if(target) target.classList.add('active');
+    
+    currentScreen = screenId;
+    
+    // Gestión del botón "Atrás"
+    if (screenId === 'home-screen') {
+        backBtn.classList.add('hidden');
+    } else if (screenId === 'menu-screen') {
+        backBtn.classList.remove('hidden');
+        backBtn.onclick = () => showScreen('home-screen');
+    } else {
+        // Estamos en una App
+        backBtn.classList.remove('hidden');
+        backBtn.onclick = () => showScreen('menu-screen');
+    }
+
+    // Gestionar simulaciones específicas
+    handleAppSimulations(screenId);
+}
+
+// --- Lógica de Apps Simuladas ---
+function handleAppSimulations(screenId) {
+    // Limpiar intervalos anteriores
+    if (bpmInterval) clearInterval(bpmInterval);
+
+    // Activar lógica específica
+    if (screenId === 'app-heart') {
+        const bpmEl = document.getElementById('bpm');
+        bpmInterval = setInterval(() => {
+            // Generar BPM aleatorio entre 65 y 95
+            const val = Math.floor(Math.random() * (95 - 65 + 1) + 65);
+            bpmEl.textContent = val;
+        }, 1500);
+    }
+}
+
+function simulateSteps() {
+    // Generar pasos al azar al cargar
+    const steps = Math.floor(Math.random() * (8000 - 1000 + 1) + 1000);
+    document.getElementById('steps-counter').textContent = steps;
+}
+
+// --- Eventos de Interacción ---
+
+// 1. Click en la pantalla Home para ir al menú
+document.getElementById('home-screen').addEventListener('click', () => {
+    showScreen('menu-screen');
+});
+
+// 2. Clicks en Iconos de Apps
+document.querySelectorAll('.app-icon').forEach(icon => {
+    icon.addEventListener('click', (e) => {
+        e.stopPropagation(); // Evitar propagación
+        const targetApp = icon.dataset.target;
+        showScreen(targetApp);
+    });
+});
+
+// 3. Botón Físico Lateral (Home / Wake)
+sideBtn.addEventListener('click', () => {
+    if (sleepOverlay.classList.contains('active')) {
+        wakeScreen();
+    } else {
+        showScreen('home-screen');
+    }
+    resetSleepTimer();
+});
+
+// --- Sistema de Apagado Automático (Sleep Mode) ---
+function resetSleepTimer() {
+    clearTimeout(sleepTimer);
+    if (sleepOverlay.classList.contains('active')) return; // Si ya está dormido, no reiniciar timer
+    
+    sleepTimer = setTimeout(() => {
+        sleepOverlay.classList.add('active'); // Oscurecer
+    }, SLEEP_DELAY);
+}
+
+function wakeScreen() {
+    sleepOverlay.classList.remove('active');
+    resetSleepTimer();
+}
+
+// Detectar cualquier toque en la pantalla para mantener despierto
+screen.addEventListener('click', () => {
+    if (sleepOverlay.classList.contains('active')) {
+        wakeScreen();
+    } else {
+        resetSleepTimer();
+    }
+});
