@@ -3,100 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smartwatch Pro</title>
+<title>Smartwatch UI Pro</title>
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-  .screen {
-    transition: transform 0.5s ease, opacity 0.5s ease;
-  }
+  .watch-size { width: 330px; height: 330px; }
+  .smooth { transition: all 0.4s ease; }
 </style>
 </head>
 
-<body class="bg-gray-900 flex items-center justify-center h-screen overflow-hidden">
+<body id="body" class="bg-gray-900 flex items-center justify-center h-screen smooth">
 
-<div class="relative w-80 h-80 bg-black rounded-full border-8 border-gray-700 shadow-2xl overflow-hidden">
+<div id="watch" class="watch-size bg-black text-white rounded-full border-8 border-gray-700 shadow-2xl relative flex flex-col items-center justify-center smooth overflow-hidden">
 
-  <!-- PANTALLA HOME -->
-  <div id="home" class="screen absolute inset-0 flex flex-col items-center justify-center text-white">
+  <!-- ANILLO DE ACTIVIDAD -->
+  <svg class="absolute inset-0 w-full h-full -rotate-90">
+    <circle cx="165" cy="165" r="140"
+      stroke="#1f2937" stroke-width="8" fill="none"/>
+    <circle id="activityRing" cx="165" cy="165" r="140"
+      stroke="#22c55e" stroke-width="8" fill="none"
+      stroke-dasharray="879"
+      stroke-dashoffset="879"
+      stroke-linecap="round"
+      class="smooth"/>
+  </svg>
 
-    <!-- Indicadores -->
-    <div class="absolute top-4 w-full flex justify-between px-6 text-xs text-gray-400">
-      <span>🔋 85%</span>
-      <span>📶 BT</span>
-    </div>
-
-    <!-- Hora -->
-    <div id="hora" class="text-6xl font-bold tracking-widest">
-      00:00
-    </div>
-
-    <!-- Fecha -->
-    <div id="fecha" class="text-sm text-gray-400 mt-1"></div>
-
-    <!-- Ritmo -->
-    <div class="mt-3 text-red-500 text-sm flex items-center gap-1">
-      ❤️ <span id="ritmo">76</span> bpm
-    </div>
-
-    <!-- Swipe Indicator -->
-    <div class="absolute bottom-6 text-xs text-gray-500 animate-pulse">
-      ↑ Actividad
-    </div>
-
+  <!-- INDICADORES SUPERIORES -->
+  <div class="absolute top-4 w-full flex justify-between px-8 text-xs">
+    <span id="battery">🔋 100%</span>
+    <span>📶 BT</span>
+    <span id="silent">🔔</span>
   </div>
 
-  <!-- PANTALLA ACTIVIDAD -->
-  <div id="activity" class="screen absolute inset-0 flex flex-col items-center justify-center text-white translate-y-full">
-
-    <h2 class="text-lg mb-3 text-green-400">Actividad</h2>
-
-    <!-- Anillos -->
-    <div class="relative w-48 h-48">
-      <svg class="absolute inset-0 w-full h-full -rotate-90">
-        <circle cx="96" cy="96" r="70" stroke="#1f2937" stroke-width="10" fill="none"/>
-        <circle id="ring1" cx="96" cy="96" r="70"
-          stroke="#22c55e" stroke-width="10" fill="none"
-          stroke-dasharray="440" stroke-dashoffset="440"
-          stroke-linecap="round" class="transition-all duration-1000"/>
-      </svg>
-
-      <div class="absolute inset-0 flex items-center justify-center text-xl font-bold">
-        75%
-      </div>
-    </div>
-
-    <div class="mt-4 text-blue-400 text-sm">👟 6,240 pasos</div>
-
-    <div class="absolute bottom-6 text-xs text-gray-500 animate-pulse">
-      ↑ Apps
-    </div>
-
+  <!-- HORA -->
+  <div id="hora" class="text-6xl font-bold tracking-widest z-10">
+    00:00
   </div>
 
-  <!-- PANTALLA APPS -->
-  <div id="apps" class="screen absolute inset-0 flex flex-col items-center justify-center text-white translate-y-full">
+  <!-- FECHA -->
+  <div id="fecha" class="text-sm text-gray-400 z-10"></div>
 
-    <h2 class="text-lg mb-4 text-purple-400">Apps</h2>
+  <!-- RITMO CARDÍACO -->
+  <div class="text-red-500 text-sm mt-2 flex items-center gap-1 z-10">
+    ❤️ <span id="ritmo">78</span> bpm
+  </div>
 
-    <div class="grid grid-cols-3 gap-4 text-2xl">
-      <button onclick="feedback(this)">💬</button>
-      <button onclick="feedback(this)">📞</button>
-      <button onclick="feedback(this)">🎵</button>
-      <button onclick="feedback(this)">🏃</button>
-      <button onclick="feedback(this)">🗺️</button>
-      <button onclick="feedback(this)">⚙️</button>
-    </div>
+  <!-- CLIMA -->
+  <div class="text-yellow-400 text-sm z-10">
+    ☀️ 26°C
+  </div>
 
+  <!-- PASOS -->
+  <div class="text-blue-400 text-sm z-10">
+    👟 <span id="pasos">0</span> pasos
+  </div>
+
+  <!-- ICONOS -->
+  <div class="absolute bottom-20 flex gap-6 text-xl z-10">
+    <button onclick="feedback(this)">💬</button>
+    <button onclick="feedback(this)">📞</button>
+    <button onclick="feedback(this)">🎵</button>
+    <button onclick="feedback(this)">🏃</button>
+  </div>
+
+  <!-- CONTROLES -->
+  <div class="absolute bottom-6 flex gap-3 text-xs z-10">
+    <button onclick="activarSensores()" class="bg-green-500 px-3 py-1 rounded-lg text-white">
+      Sensores
+    </button>
+    <button onclick="toggleModo()" class="bg-yellow-400 px-3 py-1 rounded-lg text-black">
+      🌙/☀️
+    </button>
+    <button onclick="toggleSilencio()" class="bg-gray-600 px-3 py-1 rounded-lg text-white">
+      🔕
+    </button>
   </div>
 
 </div>
 
 <script>
 
-// ======================
-// Hora en tiempo real
-// ======================
+// ================= HORA =================
 function actualizarHora() {
   const ahora = new Date();
   const h = ahora.getHours().toString().padStart(2,'0');
@@ -107,52 +94,126 @@ function actualizarHora() {
   document.getElementById("fecha").textContent =
     ahora.toLocaleDateString('es-ES', opciones);
 }
-
 setInterval(actualizarHora, 1000);
 actualizarHora();
 
 
-// ======================
-// Animar anillo actividad
-// ======================
-setTimeout(() => {
-  document.getElementById("ring1").style.strokeDashoffset = "110";
-}, 500);
+// ================= BATERÍA =================
+let bateria = 100;
 
+function actualizarBateria(){
+  const el = document.getElementById("battery");
+  el.textContent = `🔋 ${bateria}%`;
 
-// ======================
-// Navegación vertical tipo swipe
-// ======================
-let currentScreen = 0;
-const screens = [
-  document.getElementById("home"),
-  document.getElementById("activity"),
-  document.getElementById("apps")
-];
-
-function showScreen(index){
-  screens.forEach((screen, i) => {
-    screen.style.transform = `translateY(${(i - index) * 100}%)`;
-  });
-  currentScreen = index;
+  if(bateria > 50){
+    el.className = "text-green-500";
+  } else if(bateria > 20){
+    el.className = "text-yellow-400";
+  } else {
+    el.className = "text-red-500";
+  }
 }
 
-document.addEventListener("wheel", (e) => {
-  if(e.deltaY > 0 && currentScreen < screens.length - 1){
-    showScreen(currentScreen + 1);
+setInterval(()=>{
+  if(bateria > 0){
+    bateria--;
+    actualizarBateria();
   }
-  else if(e.deltaY < 0 && currentScreen > 0){
-    showScreen(currentScreen - 1);
-  }
-});
+}, 30000);
+
+actualizarBateria();
 
 
-// ======================
-// Feedback visual en apps
-// ======================
+// ================= RITMO DINÁMICO =================
+setInterval(()=>{
+  const nuevo = 70 + Math.floor(Math.random()*15);
+  document.getElementById("ritmo").textContent = nuevo;
+}, 3000);
+
+
+// ================= PASOS + ANILLO =================
+let pasos = 0;
+let ultimoMovimiento = 0;
+
+function actualizarAnillo(){
+  const porcentaje = Math.min(pasos / 10000, 1);
+  const offset = 879 - (879 * porcentaje);
+  document.getElementById("activityRing").style.strokeDashoffset = offset;
+}
+
+function detectarMovimiento(event){
+  const acc = event.accelerationIncludingGravity;
+  if(!acc) return;
+
+  const magnitud = Math.sqrt(acc.x*acc.x + acc.y*acc.y + acc.z*acc.z);
+  const ahora = Date.now();
+
+  if(magnitud > 15 && ahora - ultimoMovimiento > 500){
+    pasos++;
+    document.getElementById("pasos").textContent = pasos;
+    actualizarAnillo();
+    ultimoMovimiento = ahora;
+  }
+}
+
+function activarSensores(){
+  if(typeof DeviceMotionEvent.requestPermission === 'function'){
+    DeviceMotionEvent.requestPermission().then(res=>{
+      if(res === 'granted'){
+        window.addEventListener("devicemotion", detectarMovimiento);
+      }
+    });
+  } else {
+    window.addEventListener("devicemotion", detectarMovimiento);
+  }
+}
+
+
+// ================= MODO DÍA / NOCHE =================
+let oscuro = true;
+
+function toggleModo(){
+  const body = document.getElementById("body");
+  const watch = document.getElementById("watch");
+
+  oscuro = !oscuro;
+
+  if(oscuro){
+    body.classList.replace("bg-gray-100","bg-gray-900");
+    watch.classList.replace("bg-white","bg-black");
+    watch.classList.replace("text-black","text-white");
+  } else {
+    body.classList.replace("bg-gray-900","bg-gray-100");
+    watch.classList.replace("bg-black","bg-white");
+    watch.classList.replace("text-white","text-black");
+  }
+}
+
+
+// ================= MODO SILENCIO =================
+let silencio = false;
+
+function toggleSilencio(){
+  silencio = !silencio;
+  const icono = document.getElementById("silent");
+
+  if(silencio){
+    icono.textContent = "🔕";
+  } else {
+    icono.textContent = "🔔";
+  }
+}
+
+
+// ================= MICROANIMACIÓN =================
 function feedback(btn){
-  btn.classList.add("scale-125");
-  setTimeout(() => btn.classList.remove("scale-125"), 200);
+  btn.classList.add("scale-125","smooth");
+  if(navigator.vibrate){
+    navigator.vibrate(100);
+  }
+  setTimeout(()=>{
+    btn.classList.remove("scale-125");
+  },200);
 }
 
 </script>
