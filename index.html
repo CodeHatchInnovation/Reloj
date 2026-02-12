@@ -3,132 +3,198 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smartwatch UI Pro</title>
+<title>Smartwatch UI Interactive</title>
 <script src="https://cdn.tailwindcss.com"></script>
-
 <style>
-  .watch-size { width: 330px; height: 330px; }
-  .smooth { transition: all 0.4s ease; }
+  .watch { width: 340px; height: 340px; }
+  .screen { transition: all 0.4s ease; }
 </style>
 </head>
 
-<body id="body" class="bg-gray-900 flex items-center justify-center h-screen smooth">
+<body class="bg-gray-900 flex items-center justify-center h-screen">
 
-<div id="watch" class="watch-size bg-black text-white rounded-full border-8 border-gray-700 shadow-2xl relative flex flex-col items-center justify-center smooth overflow-hidden">
+<div class="watch bg-black text-white rounded-full border-8 border-gray-700 shadow-2xl relative overflow-hidden">
 
-  <!-- ANILLO DE ACTIVIDAD -->
-  <svg class="absolute inset-0 w-full h-full -rotate-90">
-    <circle cx="165" cy="165" r="140"
-      stroke="#1f2937" stroke-width="8" fill="none"/>
-    <circle id="activityRing" cx="165" cy="165" r="140"
-      stroke="#22c55e" stroke-width="8" fill="none"
-      stroke-dasharray="879"
-      stroke-dashoffset="879"
-      stroke-linecap="round"
-      class="smooth"/>
-  </svg>
+  <!-- ================= WATCH FACE ================= -->
+  <div id="home" class="screen absolute inset-0 flex flex-col items-center justify-center">
 
-  <!-- INDICADORES SUPERIORES -->
-  <div class="absolute top-4 w-full flex justify-between px-8 text-xs">
-    <span id="battery">🔋 100%</span>
-    <span>📶 BT</span>
-    <span id="silent">🔔</span>
-  </div>
+    <div class="absolute top-4 w-full flex justify-between px-8 text-xs">
+      <span id="battery">🔋 100%</span>
+      <span>📶 BT</span>
+      <span id="silentIcon">🔔</span>
+    </div>
 
-  <!-- HORA -->
-  <div id="hora" class="text-6xl font-bold tracking-widest z-10">
-    00:00
-  </div>
+    <div id="hora" class="text-6xl font-bold">00:00</div>
+    <div id="fecha" class="text-sm text-gray-400"></div>
 
-  <!-- FECHA -->
-  <div id="fecha" class="text-sm text-gray-400 z-10"></div>
+    <div class="mt-4 text-sm text-blue-400">
+      👟 <span id="pasos">0</span> pasos
+    </div>
 
-  <!-- RITMO CARDÍACO -->
-  <div class="text-red-500 text-sm mt-2 flex items-center gap-1 z-10">
-    ❤️ <span id="ritmo">78</span> bpm
-  </div>
-
-  <!-- CLIMA -->
-  <div class="text-yellow-400 text-sm z-10">
-    ☀️ 26°C
-  </div>
-
-  <!-- PASOS -->
-  <div class="text-blue-400 text-sm z-10">
-    👟 <span id="pasos">0</span> pasos
-  </div>
-
-  <!-- ICONOS -->
-  <div class="absolute bottom-20 flex gap-6 text-xl z-10">
-    <button onclick="feedback(this)">💬</button>
-    <button onclick="feedback(this)">📞</button>
-    <button onclick="feedback(this)">🎵</button>
-    <button onclick="feedback(this)">🏃</button>
-  </div>
-
-  <!-- CONTROLES -->
-  <div class="absolute bottom-6 flex gap-3 text-xs z-10">
-    <button onclick="activarSensores()" class="bg-green-500 px-3 py-1 rounded-lg text-white">
-      Sensores
+    <button onclick="openScreen('apps')" 
+      class="absolute bottom-6 text-xs bg-gray-700 px-4 py-1 rounded-full">
+      Apps
     </button>
-    <button onclick="toggleModo()" class="bg-yellow-400 px-3 py-1 rounded-lg text-black">
-      🌙/☀️
+
+  </div>
+
+
+  <!-- ================= MENU APPS ================= -->
+  <div id="apps" class="screen absolute inset-0 bg-black flex flex-col items-center justify-center opacity-0 pointer-events-none">
+
+    <h2 class="mb-4 text-lg text-purple-400">Aplicaciones</h2>
+
+    <div class="grid grid-cols-3 gap-6 text-2xl">
+      <button onclick="openScreen('heart')">❤️</button>
+      <button onclick="openScreen('activity')">👟</button>
+      <button onclick="openScreen('weather')">☀️</button>
+      <button onclick="openScreen('batteryScreen')">🔋</button>
+      <button onclick="toggleSilencio()">🔕</button>
+      <button onclick="toggleModo()">🌙</button>
+    </div>
+
+    <button onclick="openScreen('home')" 
+      class="absolute bottom-6 text-xs bg-gray-700 px-4 py-1 rounded-full">
+      Volver
     </button>
-    <button onclick="toggleSilencio()" class="bg-gray-600 px-3 py-1 rounded-lg text-white">
-      🔕
+
+  </div>
+
+
+  <!-- ================= HEART APP ================= -->
+  <div id="heart" class="screen absolute inset-0 bg-black flex flex-col items-center justify-center opacity-0 pointer-events-none">
+
+    <h2 class="text-red-500 mb-4">Ritmo Cardíaco</h2>
+    <div class="text-5xl text-red-500 font-bold" id="heartValue">78</div>
+    <div class="text-sm text-gray-400">bpm</div>
+
+    <button onclick="openScreen('apps')" 
+      class="absolute bottom-6 text-xs bg-gray-700 px-4 py-1 rounded-full">
+      Volver
     </button>
+
+  </div>
+
+
+  <!-- ================= ACTIVITY APP ================= -->
+  <div id="activity" class="screen absolute inset-0 bg-black flex flex-col items-center justify-center opacity-0 pointer-events-none">
+
+    <h2 class="text-green-400 mb-4">Actividad</h2>
+
+    <svg width="160" height="160" class="-rotate-90">
+      <circle cx="80" cy="80" r="70"
+        stroke="#1f2937" stroke-width="10" fill="none"/>
+      <circle id="activityRing" cx="80" cy="80" r="70"
+        stroke="#22c55e" stroke-width="10" fill="none"
+        stroke-dasharray="440"
+        stroke-dashoffset="440"
+        stroke-linecap="round"/>
+    </svg>
+
+    <div class="mt-4 text-blue-400">
+      👟 <span id="pasosActivity">0</span> pasos
+    </div>
+
+    <button onclick="openScreen('apps')" 
+      class="absolute bottom-6 text-xs bg-gray-700 px-4 py-1 rounded-full">
+      Volver
+    </button>
+
+  </div>
+
+
+  <!-- ================= WEATHER APP ================= -->
+  <div id="weather" class="screen absolute inset-0 bg-black flex flex-col items-center justify-center opacity-0 pointer-events-none">
+
+    <h2 class="text-yellow-400 mb-4">Clima</h2>
+    <div class="text-5xl">☀️</div>
+    <div class="text-2xl mt-2">26°C</div>
+
+    <button onclick="openScreen('apps')" 
+      class="absolute bottom-6 text-xs bg-gray-700 px-4 py-1 rounded-full">
+      Volver
+    </button>
+
+  </div>
+
+
+  <!-- ================= BATTERY APP ================= -->
+  <div id="batteryScreen" class="screen absolute inset-0 bg-black flex flex-col items-center justify-center opacity-0 pointer-events-none">
+
+    <h2 class="text-green-400 mb-4">Batería</h2>
+    <div id="batteryBig" class="text-5xl font-bold">100%</div>
+
+    <button onclick="cargarBateria()" 
+      class="mt-4 bg-blue-500 px-4 py-2 rounded-lg text-white text-sm">
+      Cargar
+    </button>
+
+    <button onclick="openScreen('apps')" 
+      class="absolute bottom-6 text-xs bg-gray-700 px-4 py-1 rounded-full">
+      Volver
+    </button>
+
   </div>
 
 </div>
 
+
 <script>
 
+// ================= NAVEGACIÓN =================
+function openScreen(id){
+  document.querySelectorAll(".screen").forEach(screen=>{
+    screen.classList.add("opacity-0","pointer-events-none");
+  });
+
+  const active = document.getElementById(id);
+  active.classList.remove("opacity-0","pointer-events-none");
+
+  if(navigator.vibrate) navigator.vibrate(50);
+}
+
+
 // ================= HORA =================
-function actualizarHora() {
+function actualizarHora(){
   const ahora = new Date();
   const h = ahora.getHours().toString().padStart(2,'0');
   const m = ahora.getMinutes().toString().padStart(2,'0');
   document.getElementById("hora").textContent = `${h}:${m}`;
 
-  const opciones = { weekday: 'long', day: 'numeric', month: 'long' };
+  const opciones = { weekday:'long', day:'numeric', month:'long' };
   document.getElementById("fecha").textContent =
-    ahora.toLocaleDateString('es-ES', opciones);
+    ahora.toLocaleDateString('es-ES',opciones);
 }
-setInterval(actualizarHora, 1000);
+setInterval(actualizarHora,1000);
 actualizarHora();
+
+
+// ================= RITMO DINÁMICO =================
+setInterval(()=>{
+  const nuevo = 70 + Math.floor(Math.random()*20);
+  document.getElementById("heartValue").textContent = nuevo;
+},3000);
 
 
 // ================= BATERÍA =================
 let bateria = 100;
 
 function actualizarBateria(){
-  const el = document.getElementById("battery");
-  el.textContent = `🔋 ${bateria}%`;
-
-  if(bateria > 50){
-    el.className = "text-green-500";
-  } else if(bateria > 20){
-    el.className = "text-yellow-400";
-  } else {
-    el.className = "text-red-500";
-  }
+  document.getElementById("battery").textContent = `🔋 ${bateria}%`;
+  document.getElementById("batteryBig").textContent = `${bateria}%`;
 }
-
 setInterval(()=>{
-  if(bateria > 0){
+  if(bateria>0){
     bateria--;
     actualizarBateria();
   }
-}, 30000);
+},30000);
 
+function cargarBateria(){
+  bateria = 100;
+  actualizarBateria();
+}
 actualizarBateria();
-
-
-// ================= RITMO DINÁMICO =================
-setInterval(()=>{
-  const nuevo = 70 + Math.floor(Math.random()*15);
-  document.getElementById("ritmo").textContent = nuevo;
-}, 3000);
 
 
 // ================= PASOS + ANILLO =================
@@ -136,8 +202,8 @@ let pasos = 0;
 let ultimoMovimiento = 0;
 
 function actualizarAnillo(){
-  const porcentaje = Math.min(pasos / 10000, 1);
-  const offset = 879 - (879 * porcentaje);
+  const porcentaje = Math.min(pasos/10000,1);
+  const offset = 440 - (440*porcentaje);
   document.getElementById("activityRing").style.strokeDashoffset = offset;
 }
 
@@ -145,75 +211,46 @@ function detectarMovimiento(event){
   const acc = event.accelerationIncludingGravity;
   if(!acc) return;
 
-  const magnitud = Math.sqrt(acc.x*acc.x + acc.y*acc.y + acc.z*acc.z);
+  const magnitud = Math.sqrt(acc.x*acc.x+acc.y*acc.y+acc.z*acc.z);
   const ahora = Date.now();
 
-  if(magnitud > 15 && ahora - ultimoMovimiento > 500){
+  if(magnitud>15 && ahora-ultimoMovimiento>500){
     pasos++;
     document.getElementById("pasos").textContent = pasos;
+    document.getElementById("pasosActivity").textContent = pasos;
     actualizarAnillo();
     ultimoMovimiento = ahora;
   }
 }
 
-function activarSensores(){
-  if(typeof DeviceMotionEvent.requestPermission === 'function'){
-    DeviceMotionEvent.requestPermission().then(res=>{
-      if(res === 'granted'){
-        window.addEventListener("devicemotion", detectarMovimiento);
-      }
-    });
-  } else {
-    window.addEventListener("devicemotion", detectarMovimiento);
-  }
+if(typeof DeviceMotionEvent !== "undefined"){
+  window.addEventListener("devicemotion",detectarMovimiento);
 }
 
 
-// ================= MODO DÍA / NOCHE =================
-let oscuro = true;
+// ================= MODO NOCHE =================
+let oscuro=true;
 
 function toggleModo(){
-  const body = document.getElementById("body");
-  const watch = document.getElementById("watch");
-
-  oscuro = !oscuro;
+  const watch=document.querySelector(".watch");
+  oscuro=!oscuro;
 
   if(oscuro){
-    body.classList.replace("bg-gray-100","bg-gray-900");
-    watch.classList.replace("bg-white","bg-black");
-    watch.classList.replace("text-black","text-white");
-  } else {
-    body.classList.replace("bg-gray-900","bg-gray-100");
-    watch.classList.replace("bg-black","bg-white");
-    watch.classList.replace("text-white","text-black");
+    watch.classList.remove("bg-white","text-black");
+    watch.classList.add("bg-black","text-white");
+  }else{
+    watch.classList.remove("bg-black","text-white");
+    watch.classList.add("bg-white","text-black");
   }
 }
 
 
 // ================= MODO SILENCIO =================
-let silencio = false;
-
+let silencio=false;
 function toggleSilencio(){
-  silencio = !silencio;
-  const icono = document.getElementById("silent");
-
-  if(silencio){
-    icono.textContent = "🔕";
-  } else {
-    icono.textContent = "🔔";
-  }
-}
-
-
-// ================= MICROANIMACIÓN =================
-function feedback(btn){
-  btn.classList.add("scale-125","smooth");
-  if(navigator.vibrate){
-    navigator.vibrate(100);
-  }
-  setTimeout(()=>{
-    btn.classList.remove("scale-125");
-  },200);
+  silencio=!silencio;
+  document.getElementById("silentIcon").textContent =
+    silencio ? "🔕" : "🔔";
 }
 
 </script>
